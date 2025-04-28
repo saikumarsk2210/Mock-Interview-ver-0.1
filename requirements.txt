@@ -1,0 +1,12 @@
+Flask
+PyPDF2
+python-docx
+spacy
+Werkzeug
+google-generativeai
+python-dotenv
+transformers[torch] # Or transformers if you install torch separately
+torch             # Install correct version for your system (CPU or CUDA)
+datasets          # For speaker embeddings
+soundfile         # For saving audio files
+sentencepiece     # Required by SpeechT5 tokenizer
