@@ -1,0 +1,8 @@
+__pycache__/
+ *.pyc
+.env
+backup
+backup2
+generated_audio
+report-1
+uploads

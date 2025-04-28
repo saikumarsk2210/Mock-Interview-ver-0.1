@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Report</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f8f9fa; color: #343a40; }
+        .container { max-width: 800px; margin: 30px auto; padding: 30px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 15px rgba(0,0,0,0.1); }
+        h1 { color: #0056b3; text-align: center; margin-bottom: 15px; border-bottom: 2px solid #0056b3; padding-bottom: 10px; font-weight: 600;}
+        h2 { color: #17a2b8; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid #dee2e6; padding-bottom: 5px;}
+        .conversation-log { margin-top: 20px; }
+        .log-item { margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px dashed #e0e0e0; }
+        .log-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .log-q { font-weight: 600; color: #495057; margin-bottom: 8px; }
+        .log-a { margin-left: 15px; background-color: #f8f9fa; padding: 10px; border-radius: 5px; border-left: 3px solid #28a745; margin-bottom: 10px; white-space: pre-wrap; }
+        /* Removed follow-up specific styles */
+        .log-eval { margin-left: 15px; background-color: #fff3cd; padding: 8px 10px; border-radius: 5px; border-left: 3px solid #ffc107; color: #856404; white-space: pre-wrap; margin-top: 10px; font-style: italic; font-size: 0.95em;}
+        .log-eval strong { color: #664d03; font-style: normal;} /* Keep title normal */
+        .flagged-answer { border-left-color: #dc3545 !important; background-color: #f8d7da !important; }
+        .flagged-text { color: #721c24; font-weight: bold; margin-left: 5px; }
+        .download-button { display: block; width: fit-content; margin: 30px auto 10px auto; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px; text-align: center; transition: background-color 0.2s; }
+        .download-button:hover { background-color: #5a6268; }
+        .download-unavailable { text-align: center; color: #6c757d; margin: 20px 0; font-style: italic;}
+        .home-link { display: block; text-align: center; margin-top: 20px; color: #007bff; }
+        ul { padding-left: 20px; } li { margin-bottom: 8px; }
+        @media print { /* Keep existing print styles */ }
+    </style>
+</head>
+<body>
+     <div class="container">
+        <h1>Interview Feedback Report</h1>
+
+         {% if report and report.responses %}
+             <!-- Download Button Logic -->
+             {% if not is_pdf_render and WEASYPRINT_AVAILABLE %}
+                 <a href="{{ url_for('download_report') }}" class="download-button">Download Report as PDF</a>
+             {% elif not is_pdf_render and not WEASYPRINT_AVAILABLE %}
+                  <p class="download-unavailable">(PDF download unavailable)</p>
+             {% endif %}
+
+            <div class="conversation-log">
+                <h2>Conversation Log & Feedback</h2>
+                {% set question_number = 1 %}
+                {% for item in report.responses %}
+                    {# Filter out greeting entry if it was stored #}
+                    {% if item.question != 'Initial Greeting' %}
+                        <div class="log-item">
+                            <div class="log-q">
+                               <strong>Question {{ question_number }}:</strong> {{ item.question }}
+                            </div>
+                            <div class="log-a {% if item.flag %}flagged-answer{% endif %}">
+                               <strong>Your Answer:</strong> {{ item.answer | default('(No answer recorded)', true) }}
+                               {% if item.flag %}<span class="flagged-text">(Flag: {{ item.flag }})</span>{% endif %}
+                            </div>
+
+                            {# --- SIMPLIFIED Evaluation Display --- #}
+                            {% if item.evaluation and item.evaluation != 'N/A' and item.evaluation != 'Evaluation skipped.' %}
+                               <div class="log-eval">
+                                  <strong>Note:</strong> {{ item.evaluation }}
+                               </div>
+                            {% endif %}
+                            {# --- End Simplified Evaluation --- #}
+                        </div>
+                        {% set question_number = question_number + 1 %}
+                    {% endif %} {# End check for 'Initial Greeting' #}
+                {% endfor %} {# End loop through responses #}
+            </div>
+
+             <h2>General Suggestions</h2>
+             {# Keep suggestions #}
+             <p>Review the notes provided. Consider:</p>
+             <ul><li>Specificity & Examples (STAR)</li><li>Relevance & Completeness</li><li>Clarity & Conciseness</li><li>Fluency (Self-Assessment)</li><li>Handling "Don't Know"</li></ul>
+             <p>Use this feedback to practice!</p>
+
+         {% else %}
+             <p>No report data available.</p>
+         {% endif %}
+
+         <!-- Home Link Logic -->
+         {% if not is_pdf_render %}
+            <a href="{{ url_for('index') }}" class="home-link">Start New Interview</a>
+         {% endif %}
+
+    </div>
+</body>
+</html>
