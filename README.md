@@ -110,7 +110,7 @@ Follow these steps to run the application locally:
 
 ## License
 
-This project is licensed under the MIT License - see the `LICENSE` file for details (if you add one).
+This project is licensed under the MIT License 
 
 ## Future Work / Ideas
 *   Implement a more sophisticated follup question system to keep the flow of the interview authentic.
